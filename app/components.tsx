@@ -1,4 +1,9 @@
-import Link from "next/link";
+import { Link as RouterLink } from "react-router-dom";
+import type { PropsWithChildren } from "react";
+
+export function Link({ href, children, ...props }: PropsWithChildren<{ href: string; className?: string; "aria-label"?: string; "aria-current"?: "page" }>) {
+  return <RouterLink to={href} {...props}>{children}</RouterLink>;
+}
 
 export const marketplaceUrl = "https://marketplace.visualstudio.com/items?itemName=pr3ciousCanCod3.scribe-dev-logger";
 export const githubUrl = "https://github.com/Awenes/Scribe";

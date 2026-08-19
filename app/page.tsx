@@ -1,8 +1,4 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { Footer, Header, LogWindow, marketplaceUrl } from "./components";
-
-export const metadata: Metadata = { title: "Scribe — A local-first developer activity journal", description: "Turn VS Code activity into readable, Git-backed work logs that stay on your machine." };
+import { Footer, Header, Link, LogWindow, marketplaceUrl } from "./components";
 
 const features = [
   ["01", "Tracks the edits", "Scribe counts file changes as you work, grouped into a logging interval you control."],
@@ -11,7 +7,7 @@ const features = [
   ["04", "Closes the loop", "Daily and weekly summaries turn a stream of small edits into a useful work journal."],
 ];
 
-export default function Home() {
+export function Home() {
   return <main>
     <Header />
     <section className="hero" aria-labelledby="hero-heading"><div className="hero-copy"><p className="eyebrow"><span className="status-dot" /> Local-first for VS Code</p><h1 id="hero-heading">Your workday,<br /><em>written down.</em></h1><p className="hero-intro">Scribe quietly turns your editing activity into readable Markdown logs and Git-backed history—right on your machine.</p><div className="hero-actions"><a className="button" href={marketplaceUrl}>Install for VS Code <span aria-hidden="true">↗</span></a><Link className="text-link" href="/docs">Read the docs <span aria-hidden="true">→</span></Link></div><p className="microcopy">Free and open source. No account required.</p></div><LogWindow /></section>

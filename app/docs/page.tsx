@@ -1,19 +1,10 @@
-import type { Metadata } from "next";
 import { Footer, Header, githubUrl, marketplaceUrl } from "../components";
-
-export const metadata: Metadata = {
-  title: { absolute: "Documentation — Scribe" },
-  description: "Install, configure, and understand the Scribe developer activity logger for VS Code.",
-  alternates: { canonical: "/docs" },
-  openGraph: { title: "Scribe documentation", description: "Install, configure, and understand Scribe for VS Code.", url: "/docs", images: [] },
-  twitter: { title: "Scribe documentation", description: "Install, configure, and understand Scribe for VS Code.", images: [] },
-};
 
 const sections = [
   ["installation", "Installation"], ["how-it-works", "How it works"], ["configuration", "Configuration"], ["commands", "Commands"], ["log-format", "Log format"], ["privacy", "Privacy"], ["troubleshooting", "Troubleshooting"],
 ];
 
-export default function Docs() {
+export function Docs() {
   return <main className="docs-page"><Header docs /><header className="docs-hero section-shell"><p className="eyebrow"><span className="status-dot" /> Documentation</p><h1>Start keeping<br /><em>the record.</em></h1><p>Everything you need to install Scribe, understand what it records, and inspect your local activity history.</p></header>
     <div className="docs-layout section-shell"><aside className="docs-sidebar"><nav aria-label="Documentation sections"><p>On this page</p>{sections.map(([id,label]) => <a key={id} href={`#${id}`}>{label}</a>)}</nav><a className="button" href={marketplaceUrl}>Install extension ↗</a></aside>
       <article className="docs-content">
