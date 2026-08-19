@@ -1,0 +1,41 @@
+import type { Metadata } from "next";
+import { Footer, Header, githubUrl, marketplaceUrl } from "../components";
+
+export const metadata: Metadata = {
+  title: { absolute: "Documentation — Scribe" },
+  description: "Install, configure, and understand the Scribe developer activity logger for VS Code.",
+  alternates: { canonical: "/docs" },
+  openGraph: { title: "Scribe documentation", description: "Install, configure, and understand Scribe for VS Code.", url: "/docs", images: [] },
+  twitter: { title: "Scribe documentation", description: "Install, configure, and understand Scribe for VS Code.", images: [] },
+};
+
+const sections = [
+  ["installation", "Installation"], ["how-it-works", "How it works"], ["configuration", "Configuration"], ["commands", "Commands"], ["log-format", "Log format"], ["privacy", "Privacy"], ["troubleshooting", "Troubleshooting"],
+];
+
+export default function Docs() {
+  return <main className="docs-page"><Header docs /><header className="docs-hero section-shell"><p className="eyebrow"><span className="status-dot" /> Documentation</p><h1>Start keeping<br /><em>the record.</em></h1><p>Everything you need to install Scribe, understand what it records, and inspect your local activity history.</p></header>
+    <div className="docs-layout section-shell"><aside className="docs-sidebar"><nav aria-label="Documentation sections"><p>On this page</p>{sections.map(([id,label]) => <a key={id} href={`#${id}`}>{label}</a>)}</nav><a className="button" href={marketplaceUrl}>Install extension ↗</a></aside>
+      <article className="docs-content">
+        <section id="installation"><p className="doc-number">01</p><h2>Installation</h2><p>Scribe requires VS Code 1.80 or newer and Git available from your command line. Git is used only for the local repository that versions Scribe&apos;s generated logs.</p><ol className="steps"><li><span>1</span><div><strong>Install Scribe</strong><p>Open the Visual Studio Marketplace listing and choose Install.</p></div></li><li><span>2</span><div><strong>Open a workspace</strong><p>Scribe activates automatically when VS Code has a workspace folder open.</p></div></li><li><span>3</span><div><strong>Keep coding</strong><p>The status bar shows “Scribe active” while edit activity is being collected.</p></div></li></ol><a className="button" href={marketplaceUrl}>Open Marketplace ↗</a></section>
+
+        <section id="how-it-works"><p className="doc-number">02</p><h2>How it works</h2><p>Scribe listens for text-document changes and counts the individual content changes reported by VS Code. At each configured interval it appends a timestamped entry to a daily Markdown file, commits the generated log to a workspace-specific Git repository, and clears the in-memory counter for the next interval.</p><div className="flow-row"><div><strong>01</strong><span>Edit files</span></div><b>→</b><div><strong>02</strong><span>Write Markdown</span></div><b>→</b><div><strong>03</strong><span>Commit locally</span></div></div><div className="callout"><strong>Storage location</strong><code>~/.scribe/&lt;workspace-folder&gt;/</code><p>The <code>~</code> represents your operating system&apos;s home directory.</p></div></section>
+
+        <section id="configuration"><p className="doc-number">03</p><h2>Configuration</h2><p>Scribe currently exposes one VS Code setting. Search for “Scribe Settings” in Settings, or add the key to your settings JSON.</p><div className="setting-table" role="table" aria-label="Scribe settings"><div className="table-head" role="row"><span>Setting</span><span>Default</span><span>Range</span></div><div role="row"><code>activityTracker.interval</code><span>30 minutes</span><span>1–120 minutes</span></div></div><div className="code-block"><div>settings.json</div><pre><code>{`{
+  "activityTracker.interval": 30
+}`}</code></pre></div><p>Daily summaries are checked at midnight. Weekly summaries are checked on Sundays at 23:59, independently of the interval value.</p></section>
+
+        <section id="commands"><p className="doc-number">04</p><h2>Commands</h2><p>Open the Command Palette with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> on Windows/Linux or <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> on macOS.</p><div className="command-list"><div><code>Scribe: Restore Snapshot</code><p>Browse commits in Scribe&apos;s local log repository, inspect one, then restore that log-repository commit or create a branch from it.</p></div><div><code>Scribe: Show Snapshot Diff</code><p>Select exactly two Scribe log commits and open their difference in a VS Code diff document.</p></div></div><div className="warning"><strong>Important: “snapshot” means log history</strong><p>These commands operate on the Git repository inside <code>~/.scribe</code>. They do not snapshot, restore, switch, or modify your project&apos;s source-code repository.</p></div></section>
+
+        <section id="log-format"><p className="doc-number">05</p><h2>Log format</h2><p>Interval logs are appended to <code>log-YYYY-MM-DD.md</code>. Paths are recorded as reported by VS Code, followed by the number of content changes counted during that interval.</p><div className="code-block"><div>log-2026-08-19.md</div><pre><code>{`### 19/08/2026, 10:30:00
+
+- Edited: /project/src/header.tsx (4 times)
+- Edited: /project/src/page.tsx (2 times)`}</code></pre></div><h3>Summaries</h3><p>At its scheduled checks, Scribe writes daily and weekly summary files from commit messages in its local log repository. Closing VS Code also attempts to write and commit any remaining in-memory activity.</p></section>
+
+        <section id="privacy"><p className="doc-number">06</p><h2>Privacy</h2><p>The current extension has no account, analytics service, hosted dashboard, network sync, or remote repository integration. Its activity logs and Git history are created on your computer.</p><ul><li>Scribe records file paths and edit counts—not the contents of your source files.</li><li>Paths may still reveal project, folder, or file names, so treat exported logs accordingly.</li><li>All repositories and summary files under <code>~/.scribe</code> remain under your control.</li></ul></section>
+
+        <section id="troubleshooting"><p className="doc-number">07</p><h2>Troubleshooting</h2><div className="faq"><details open><summary>Scribe says no workspace is open.</summary><p>Open a folder or workspace in VS Code, then reload the window so Scribe can create a workspace-specific log directory.</p></details><details><summary>Logs are not being committed.</summary><p>Confirm Git is installed and configured with a user name and email. Check the Scribe output channel for the reported Git error.</p></details><details><summary>I do not see a daily or weekly summary.</summary><p>Summary generation is checked while VS Code and the extension are running at the scheduled minute. Review the Scribe output channel for details.</p></details></div><p>Still stuck? <a className="inline-link" href={`${githubUrl}/issues`}>Open an issue on GitHub ↗</a></p></section>
+      </article>
+    </div><Footer />
+  </main>;
+}
