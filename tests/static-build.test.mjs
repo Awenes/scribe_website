@@ -24,3 +24,14 @@ test("build output contains only static deployment assets", async () => {
   assert.ok(files.includes("docs"));
   assert.ok(!files.includes("server"));
 });
+
+test("scroll reveals are progressive and respect reduced motion", async () => {
+  const [source, css] = await Promise.all([
+    readFile(new URL("../src/main.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+  assert.match(source, /IntersectionObserver/);
+  assert.match(source, /prefers-reduced-motion: reduce/);
+  assert.match(css, /\.reveal-ready\.is-visible/);
+  assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
+});

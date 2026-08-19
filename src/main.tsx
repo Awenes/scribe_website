@@ -38,8 +38,51 @@ function RouteEffects() {
   return null;
 }
 
+function ScrollReveals() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const selectors = [
+      ".hero-copy > *", ".log-window", ".proof-strip > *",
+      ".section-heading > *", ".section-lede", ".feature-card",
+      ".local-grid > *", ".summary-section > *", ".final-cta > *",
+      ".docs-hero > *", ".docs-sidebar", ".docs-content > section",
+    ].join(",");
+    const elements = Array.from(document.querySelectorAll<HTMLElement>(selectors));
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    elements.forEach((element, index) => {
+      element.classList.add("reveal-ready");
+      const siblings = element.parentElement
+        ? Array.from(element.parentElement.children).filter((child) => elements.includes(child as HTMLElement))
+        : [];
+      element.style.setProperty("--reveal-delay", `${Math.min(siblings.indexOf(element), 5) * 70}ms`);
+      if (reduceMotion) element.classList.add("is-visible");
+      element.dataset.revealIndex = String(index);
+    });
+
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      elements.forEach((element) => element.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -10%" });
+
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  return null;
+}
+
 function App() {
-  return <><RouteEffects /><Routes><Route path="/" element={<Home />} /><Route path="/docs" element={<Docs />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></>;
+  return <><RouteEffects /><ScrollReveals /><Routes><Route path="/" element={<Home />} /><Route path="/docs" element={<Docs />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes></>;
 }
 
 createRoot(document.getElementById("root")!).render(<StrictMode><BrowserRouter><App /></BrowserRouter></StrictMode>);
