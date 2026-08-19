@@ -35,3 +35,12 @@ test("scroll reveals are progressive and respect reduced motion", async () => {
   assert.match(css, /\.reveal-ready\.is-visible/);
   assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
 });
+
+test("mobile layout guards intrinsic-width and long-content overflow", async () => {
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  assert.match(css, /\.log-window\s*\{[^}]*min-width:0/);
+  assert.match(css, /\.docs-content\s*\{\s*min-width:0/);
+  assert.match(css, /overflow-wrap:anywhere/);
+  assert.match(css, /@media\(max-width:420px\)/);
+  assert.match(css, /\.docs-sidebar nav\{grid-template-columns:minmax\(0,1fr\)/);
+});
