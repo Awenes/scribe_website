@@ -1,6 +1,17 @@
 # Scribe website
 
-Static product and documentation website for [Scribe](https://github.com/Awenes/Scribe), a local-first developer activity logger for VS Code.
+The product and documentation website for [Scribe](https://github.com/Awenes/Scribe), a local-first developer activity tracker for VS Code.
+
+The site explains the product, its privacy model, and the workflows behind activity logs, summaries, diffs, and snapshot restoration.
+
+## Role in the product
+
+The extension and website have deliberately separate responsibilities:
+
+- **Scribe extension:** observes workspace activity and manages local logs and snapshots
+- **Scribe website:** communicates the product, documents its behavior, and helps developers evaluate it before installation
+
+This separation keeps the extension focused while allowing the documentation experience to evolve independently.
 
 ## Architecture
 
@@ -8,12 +19,22 @@ Static product and documentation website for [Scribe](https://github.com/Awenes/
 - Vite static build
 - React Router browser routing
 - Prebuilt HTML entry points for `/` and `/docs`
+- Netlify deployment configuration
 
-No application server, SSR runtime, API routes, authentication, or persistence layer is required.
+The site requires no application server, SSR runtime, API routes, authentication, or persistence layer.
+
+## Routes
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Product overview and primary calls to action |
+| `/docs` | Documentation and product behavior |
+
+The production build writes a dedicated `dist/docs/index.html` entry point so the documentation route can load directly with route-specific metadata.
 
 ## Local development
 
-Requires Node.js 20.19 or newer.
+Node.js 20.19 or newer is required.
 
 ```bash
 npm install
@@ -22,12 +43,31 @@ npm run dev
 
 ## Validation
 
+Run the complete local validation suite before opening a pull request:
+
 ```bash
 npm run typecheck
 npm run lint
 npm test
+npm run build
 ```
 
-## Netlify
+## Deployment
 
-The committed `netlify.toml` runs `npm run build`, publishes `dist`, and provides the SPA fallback required for browser history routes. The build also writes `dist/docs/index.html` so `/docs` is directly loadable with route-specific metadata.
+The committed `netlify.toml` configuration:
+
+- runs the production build
+- publishes the generated `dist` directory
+- provides the fallback required for browser-history routes
+- preserves direct access to `/docs`
+
+## Design principles
+
+- Explain behavior before asking for trust
+- Treat privacy and local ownership as product features
+- Keep documentation close to the workflows it describes
+- Prefer a fast, focused experience over unnecessary application infrastructure
+
+## Related repository
+
+The VS Code extension lives in [Awenes/Scribe](https://github.com/Awenes/Scribe).
